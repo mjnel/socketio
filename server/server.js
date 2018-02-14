@@ -14,23 +14,19 @@ app.use(express.static(path.join(__dirname, `../public`)));
 io.on('connection', (socket)=>{
     console.log("Connected to client")
     
-    
-        socket.emit(`newEmail`, {
-            from: "jen@email.com",
-            text: "hey whats going on",
-            date: new Date().getTime()
-            }) 
+    socket.emit('test',{
+        test: "emit test event working"
+    })    
 
-       
-        
-        
-        socket.on(`createMessage`, (message)=>{
-        console.log(`createMessage`, message);
-        })
-        
+  socket.on('createMessage', (message) => {
+    // console.log('createMessage', message);
+    io.emit('newMessage1', {
+      from: message.from,
+      text: message.text,
+      createdAt: new Date().getTime()
+    });
 
-
-
+})
 
 
     socket.on(`disconnect`, ()=>{
