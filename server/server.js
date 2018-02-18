@@ -2,6 +2,7 @@ const path = require('path')
 const express = require("express");
 const http= require("http"); 
 const socketIO = require("socket.io")
+const {generateMessage} = require ("./utils/message.js")
 
 var app = express();
 // setting the http create server method to use the express library
@@ -11,22 +12,27 @@ var io = socketIO(server)
 // serving the public directory. app.use is a middleware 
 app.use(express.static(path.join(__dirname, `../public`)));
 
+
+
+
+
 io.on('connection', (socket)=>{
     console.log("Connected to client")
+
+socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app!'))
+socket.broadcast.emit('newMessage',generateMessage('Admin','New User Joined!'))
+
+
     
-    socket.emit('test',{
-        test: "emit test event working"
-    })    
 
-  socket.on('createMessage', (message) => {
-    // console.log('createMessage', message);
-    io.emit('newMessage1', {
-      from: message.from,
-      text: message.text,
-      createdAt: new Date().getTime()
-    });
+ socket.on('createMessage', (message) => {
+    console.log('createMessage', message);
+    io.emit('newMessage', generateMessage(message.from,message.text))
+    
+ })
+ 
 
-})
+
 
 
     socket.on(`disconnect`, ()=>{
