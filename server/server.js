@@ -25,10 +25,11 @@ socket.broadcast.emit('newMessage',generateMessage('Admin','New User Joined!'))
 
     
 
- socket.on('createMessage', (message) => {
+ socket.on('createMessage', (message, callback) => {
     console.log('createMessage', message);
-    io.emit('newMessage', generateMessage(message.from,message.text))
-    
+    io.emit('newMessage', generateMessage(message.from,message.text));
+    callback(`this is from the server`);
+        
  })
  
 
