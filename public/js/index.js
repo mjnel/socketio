@@ -18,6 +18,7 @@
               var li  = jQuery('<li></li>')
               li.text(`${message.from}: ${message.text}`)
               jQuery('#messages').append(li)
+              ;
             });
             
 
@@ -27,9 +28,10 @@
                 e.preventDefault();
             
             socket.emit(`createMessage`,{
-                from: "User",
+                from: jQuery('[name=user]').val(),
                 text: jQuery('[name=message]').val()
             }, function(){
+                jQuery('[name=message]').val('')
                 
             })
                 
