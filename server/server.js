@@ -2,7 +2,7 @@ const path = require('path')
 const express = require("express");
 const http= require("http"); 
 const socketIO = require("socket.io")
-const {generateMessage} = require ("./utils/message.js")
+const {generateMessage, generateLocationMessage} = require ("./utils/message.js")
 
 var app = express();
 // setting the http create server method to use the express library
@@ -32,6 +32,11 @@ socket.broadcast.emit('newMessage',generateMessage('Admin','New User Joined!'))
         
  })
  
+socket.on('createLocationMessage', (coords)=>{
+    io.emit(`newLocationMessage`,generateLocationMessage(coords.user, coords.latitude, coords.longitude));
+})
+
+
 
 
 
