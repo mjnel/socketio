@@ -1,32 +1,33 @@
 <!DOCTYPE html>
 
 <html>
-    
+
     <head>
         <meta  charset="utf-8">
-        
+
         <script src = "https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
     </head>
-    
+
     <body>
-        
-        
+
+
         <p> Welcome to the chat app</p>
         <ol id = "messages"></ol>
-        
+
         <form id ="message-form">
-            <input name = "user" type= "user" placeholder="User"/> 
+            <input name = "user" type= "user" placeholder="User"/>
             <input name = "message" type= "text" placeholder="Message"/>
             <button>Send</button>
+            <button id = "send-location">Send Location </button>
+
         </form>
-        <button id = "send-location">Send Location </button>
-        
-        
-        <script src = "/socket.io/socket.io.js"></script> 
+
+
+        <script src = "/socket.io/socket.io.js"></script>
         <script src = "/js/index.js"></script>
-        
+
     </body>
-    
-    
+
+
 </html>
