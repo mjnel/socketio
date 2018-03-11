@@ -3,7 +3,6 @@
 
 
     function scrollToBottom (){
-
       //selectors
       var messages = jQuery('#messages');
       // selector specific to the selector
@@ -24,8 +23,18 @@
     }
 
 
-            socket.on(`connect`, function(){
-                console.log("connected to server")
+      socket.on(`connect`, function(){
+            var params = jQuery.deparam(window.location.search);
+            //  first argument for errors only
+            socket.emit('join', params, function(err){
+              if(err){
+                alert(err)
+                window.location.href ='/'
+              }else {
+                console.log('no error')
+
+              }
+              })
             })
 
 
@@ -68,14 +77,6 @@
               jQuery('#messages').append(html);
               scrollToBottom()
           });
-
-
-
-
-
-
-
-
 
 
 

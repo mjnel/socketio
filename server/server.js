@@ -3,6 +3,7 @@ const express = require("express");
 const http= require("http");
 const socketIO = require("socket.io")
 const {generateMessage, generateLocationMessage} = require ("./utils/message.js")
+const {isRealString} = require("./utils/validation.js")
 const port = process.env.PORT || 3000;
 
 
@@ -15,16 +16,36 @@ var io = socketIO(server)
 app.use(express.static(path.join(__dirname, `../public`)));
 
 
+//io.emit - emits to every connected user
+//socket.broadcast.emit - sends to every user expect the connected user
+//socket.emit - event to one user
 
+
+
+//io.emit - emits to every connected user
+  // io.to.('room name').emit
+
+//socket.broadcast.emit - sends to every user expect the connected user
+  //socket.broadcast.to('room name').emit
 
 
 io.on('connection', (socket)=>{
-    console.log("Connected to client")
-
-socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app!'))
-socket.broadcast.emit('newMessage',generateMessage('Admin','New User Joined!'))
+console.log("Connected to client")
 
 
+
+
+socket.on('join',(params, callback)=>{
+// if name OR if room returns false then throw the callback
+if(!isRealString(params.name) || !isRealString(params.room)){
+    callback('name and room name are required')
+  }
+  socket.join(params.room)
+  socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app!'))
+  socket.broadcast.to(params.room).emit('newMessage',generateMessage('Admin',`${params.name} has joined`))
+
+  callback();
+})
 
 
  socket.on('createMessage', (message, callback) => {
