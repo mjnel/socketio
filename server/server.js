@@ -3,6 +3,7 @@ const express = require("express");
 const http= require("http");
 const socketIO = require("socket.io")
 const {generateMessage, generateLocationMessage} = require ("./utils/message.js")
+const {Users} = require("./utils/users.js")
 const {isRealString} = require("./utils/validation.js")
 const port = process.env.PORT || 3000;
 
@@ -14,6 +15,7 @@ var server = http.createServer(app)
 var io = socketIO(server)
 // serving the public directory. app.use is a middleware
 app.use(express.static(path.join(__dirname, `../public`)));
+var users = new Users ();
 
 
 //io.emit - emits to every connected user
@@ -38,9 +40,17 @@ console.log("Connected to client")
 socket.on('join',(params, callback)=>{
 // if name OR if room returns false then throw the callback
 if(!isRealString(params.name) || !isRealString(params.room)){
-    callback('name and room name are required')
+  return callback('name and room name are required')
   }
-  socket.join(params.room)
+
+// removing a user if they already exisit in the room + adding a user
+  users.removeUser(socket.id)
+  users.addUser(socket.id, params.name, params.room)
+
+
+  socket.join(params.room);
+  io.to(params.room).emit('updateUserList', users.getUserList(params.room))
+
   socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app!'))
   socket.broadcast.to(params.room).emit('newMessage',generateMessage('Admin',`${params.name} has joined`))
 
@@ -61,11 +71,17 @@ socket.on('createLocationMessage', (coords)=>{
 
 
 
-
-
-
-    socket.on(`disconnect`, ()=>{
+  socket.on(`disconnect`, ()=>{
         console.log("Disconnected from client")
+        var user = users.removeUser(socket.id)
+
+        if(user){
+          io.to(user.room).emit('updateUserList', users.getUserList(user.room))
+          io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left`))
+
+        }
+
+
         })
 })
 

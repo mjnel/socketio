@@ -22,7 +22,7 @@
 
     }
 
-
+// socket.on (`connect`) - always starts when the JS file is started
       socket.on(`connect`, function(){
             var params = jQuery.deparam(window.location.search);
             //  first argument for errors only
@@ -61,6 +61,17 @@
             });
 
 
+
+
+
+      socket.on(`updateUserList`,function(returnedUsersArray){
+        // console.log(returnedUsersArray)
+          var ol = jQuery('<ol></ol>');
+          returnedUsersArray.forEach(function(eachUser){
+            ol.append(jQuery('<li></li>').text(eachUser))
+          });
+          jQuery('#users').html(ol)
+          })
 
 
 
