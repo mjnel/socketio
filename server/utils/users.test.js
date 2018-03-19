@@ -1,88 +1,78 @@
 const expect = require('expect');
 
-const {Users} = require(`./users.js`);
+const {Users} = require('./users');
 
-
-
-
-
-describe('Users', ()=>{
+describe('Users', () => {
   var users;
-  beforeEach(()=>{
+
+  beforeEach(() => {
     users = new Users();
-    users.users=[{
-      id: 1,
-      name: "Mike",
-      room: "Node Course"
-    },{
-      id: 2,
-      name: "Jen",
-      room: "React Course"
-    },{
-      id: 3,
-      name: "Mark",
-      room: "Node Course"
-    },]
+    users.users = [{
+      id: '1',
+      name: 'Mike',
+      room: 'Node Course'
+    }, {
+      id: '2',
+      name: 'Jen',
+      room: 'React Course'
+    }, {
+      id: '3',
+      name: 'Julie',
+      room: 'Node Course'
+    }];
+  });
 
-  })
+  it('should add new user', () => {
+    var users = new Users();
+    var user = {
+      id: '123',
+      name: 'Andrew',
+      room: 'The Office Fans'
+    };
+    var resUser = users.addUser(user.id, user.name, user.room);
 
+    expect(users.users).toEqual([user]);
+  });
 
-    it(`should add new user`,()=>{
-      var newUser = new Users();
-      var user = {
-        id: 1234,
-        name: "Mark",
-        room: "testRoom"
+  it('should remove a user', () => {
+    var userId = '1';
+    var user = users.removeUser(userId);
 
-      }
-      newUser.addUser(user.id, user.name, user.room)
-      expect(newUser.users).toEqual([user])
+    expect(user.id).toBe(userId);
+    expect(users.users.length).toBe(2);
+  });
 
-    })
+  it('should not remove user', () => {
+    var userId = '99';
+    var user = users.removeUser(userId);
 
+    expect(user).toNotExist();
+    expect(users.users.length).toBe(3);
+  });
 
-    it(`should return names for Node Course`, ()=>{
-      var returnedUser = users.getUserList("Node Course")
-      expect(returnedUser).toEqual(['Mike', 'Mark'])
+  it('should find user', () => {
+    var userId = '2';
+    var user = users.getUser(userId);
 
-    })
+    expect(user.id).toBe(userId);
+  });
 
+  it('should not find user', () => {
+    var userId = '99';
+    var user = users.getUser(userId);
 
-    it(`should return names for React Course`, ()=>{
-      var returnedUser = users.getUserList("React Course")
-      expect(returnedUser).toEqual(['Jen'])
+    expect(user).toNotExist();
+  });
 
-})
+  it('should return names for node course', () => {
+    var userList = users.getUserList('Node Course');
 
-    it(`should find user`,()=>{
-      var userId = 2;
-      var foundUser = users.getUser(userId)
-      expect(foundUser.id).toBe(userId)
+    expect(userList).toEqual(['Mike', 'Julie']);
+  });
 
-    })
+  it('should return names for react course', () => {
+    var userList = users.getUserList('React Course');
 
-
-    it(`should not find user`, ()=>{
-      var userId = 99;
-      var foundUser = users.getUser(userId)
-      expect(foundUser).toNotExist();
-    })
-
-    it(`should remove a user`,()=>{
-      var userID = 1;
-      var removedUser = users.removeUser(userID)
-
-      expect(removedUser.id).toBe(userID)
-      expect(users.users.length).toBe(2);
-
-})
-
-      it(`should not remove a user`,()=>{
-      var userID = 99;
-      var removedUser = users.removeUser(userID)
-
-      expect(removedUser).toNotExist();
-      expect(users.users.length).toBe(3);
-      })
-
-})
+    expect(userList).toEqual(['Jen']);
+  });
+});
